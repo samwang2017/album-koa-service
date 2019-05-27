@@ -1,0 +1,25 @@
+{
+  "name": "koa-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "config.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samwang2017/album-koa-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samwang2017/album-koa-service/issues"
+  },
+  "homepage": "https://github.com/samwang2017/album-koa-service#readme",
+  "dependencies": {
+    "koa-multer": "^1.0.2"
+  }
+}
