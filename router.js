@@ -3,7 +3,9 @@ const router=new Router()
 const account=require('./actions/account')
 const auth=require('./middlewares/auth')
 const photo=require('./actions/photo')
-
+const multer=require('koa-multer')
+const path=require('path')
+const uuid=require('uuid')
 async function responseOK(ctx,next){
     ctx.body={
         status:0
@@ -87,3 +89,39 @@ router.get('/xcx/album',auth,async(context,next)=>{
         status:0
     }
 })
+
+//上传图片
+const storage=multer.diskStorage({
+    destination:path.join(__dirname,'uploads'),
+    filename(req,file,cb){
+        const ext=path.extname(file.originalname)
+        cb(null,uuid.v4()+ext)
+    }
+})
+
+const uploader=multer({
+    storage:storage
+})
+
+router.post('/photo',auth,uploader.single('file'),async(context,next)=>{
+    const {file}=context.req
+    const {id}=context.req.body
+    await photo.add(context.state.user.id,
+        `https://static.ikcamp.cn/${file.filename}`,
+        id
+    )
+    await next()
+},responseOK)
+
+//删除照片
+router.delete('/photo/:id',auth,async(context,next)=>{
+    const p=await photo.getPhotoById(context.params.id)
+    if(p){
+        if(p.userId===context.state.user.id||context.state.user.isAdmin){
+            await photo.delete(context.params.id)
+        }else{
+            context.throw(403,'no access to delete')
+        }
+    }
+    await next()
+},responseOK)

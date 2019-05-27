@@ -32,5 +32,14 @@ module.exports={
                 fm:ps[0]?ps[0].url:null
             },item.toObject())
         }))
+    },
+    async add(userId,url,albumId){
+        return photo.add(userId,url,albumId)
+    },
+    async getPhotoById(id){
+        return photo.getPhotoById(id)
+    },
+    async delete(id){
+        return photo.delete(id)
     }
 }
