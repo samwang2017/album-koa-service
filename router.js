@@ -2,7 +2,7 @@ const Router=require('koa-router')
 const router=new Router()
 const account=require('./actions/account')
 const auth=require('./middlewares/auth')
-
+const photo=require('./actions/photo')
 
 async function responseOK(ctx,next){
     ctx.body={
@@ -59,4 +59,31 @@ router.get('/login/errcode/check/:code',async(context,next)=>{
 
     }
     await login()
+})
+
+//添加相册
+router.post('/album',auth,async(context,next)=>{
+    const {name}=context.request.body
+    await photo.addAlbum(context.state.user.id,name)
+    await next()
+},responseOK)
+
+//修改相册
+router.put('/album/:id',auth,async(context,next)=>{
+    await photo.updateAlbum(context.params.id,context.body.name,ctx.user)
+    await next()
+},responseOK)
+//删除相册
+router.del('/album/:id',auth,async(context,next)=>{
+    await photo.deleteAlbum(context.params.id)
+    await next()
+},responseOK)
+
+// 相册照片数量
+router.get('/xcx/album',auth,async(context,next)=>{
+    const albums=await photo.getAlbums(context.state.user.id)
+    context.body={
+        data:albums,
+        status:0
+    }
 })
